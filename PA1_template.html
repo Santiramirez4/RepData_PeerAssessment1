@@ -277,6 +277,13 @@ sum(is.na(activity))</code></pre>
 <pre><code>## [1] 2304</code></pre>
 <p>The total amount of missing values in the observations is <strong>2304</strong>. Important to highlight that is the same value of NA present, which indicate that each observation has not more than 1 NA value.</p>
 <p><strong>2. - Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.</strong></p>
+<p><strong>Strategy Definition:</strong></p>
+<ul>
+<li>Create a new table with all dates and the average value of steps per day</li>
+<li>For those dates that have no value, the general average “steps” value will be used</li>
+<li>The table with be used to fill the NA fields in the data frame “activity”.</li>
+<li>The values from this table “averge.stepsDay” will be used only in NA data</li>
+</ul>
 <p>First, create a table with the average steps per day</p>
 <pre class="r"><code>averages.stepsDay &lt;- aggregate(x = list(stepsAvg = activity$steps), by = list(date = activity$date), FUN = mean, na.rm = TRUE)
 
@@ -349,6 +356,20 @@ while (index &lt;= dimension) {
         }
         index &lt;- index + 1
 }</code></pre>
+<p><strong>3. - Create a new dataset that is equal to the original dataset but with the missing data filled in.</strong></p>
+<pre class="r"><code>activity3 &lt;- subset(activity2, select = c(&quot;steps&quot;, &quot;date&quot;, &quot;interval&quot;))
+head(activity3, 10) #This data Frame has the same estructure of the original data but without NA values</code></pre>
+<pre><code>##      steps       date interval
+## 1  37.3826 2012-10-01        0
+## 2  37.3826 2012-10-01        5
+## 3  37.3826 2012-10-01       10
+## 4  37.3826 2012-10-01       15
+## 5  37.3826 2012-10-01       20
+## 6  37.3826 2012-10-01       25
+## 7  37.3826 2012-10-01       30
+## 8  37.3826 2012-10-01       35
+## 9  37.3826 2012-10-01       40
+## 10 37.3826 2012-10-01       45</code></pre>
 </div>
 
 

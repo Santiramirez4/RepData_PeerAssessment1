@@ -262,6 +262,13 @@ has not more than 1 NA value.
 **2. - Devise a strategy for filling in all of the missing values in the dataset. The  strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.**
 
 
+**Strategy Definition:**
+
+* Create a new table with all dates and the average value of steps per day
+* For those dates that have no value, the general average "steps" value will be used
+* The table with be used to fill the NA fields in the data frame "activity".
+* The values from this table "averge.stepsDay" will be used only in NA data
+
 First, create a table with the average steps per day
 
 
@@ -361,6 +368,28 @@ while (index <= dimension) {
         }
         index <- index + 1
 }
+```
+
+**3. - Create a new dataset that is equal to the original dataset but with the missing data filled in.**
+
+
+```r
+activity3 <- subset(activity2, select = c("steps", "date", "interval"))
+head(activity3, 10) #This data Frame has the same estructure of the original data but without NA values
+```
+
+```
+##      steps       date interval
+## 1  37.3826 2012-10-01        0
+## 2  37.3826 2012-10-01        5
+## 3  37.3826 2012-10-01       10
+## 4  37.3826 2012-10-01       15
+## 5  37.3826 2012-10-01       20
+## 6  37.3826 2012-10-01       25
+## 7  37.3826 2012-10-01       30
+## 8  37.3826 2012-10-01       35
+## 9  37.3826 2012-10-01       40
+## 10 37.3826 2012-10-01       45
 ```
 
 
