@@ -83,6 +83,12 @@ print(mean.steps)
 print(median.steps)
 ```
 
+In the other hand, the **mean** and **median** values are the following:
+```{r puremeanmedian2}
+mean(activity$steps, na.rm = TRUE)
+median(activity$steps, na.rm = TRUE)
+```
+
 ## What is the average daily activity pattern?
 
 
@@ -214,9 +220,63 @@ activity3 <- subset(activity2, select = c("steps", "date", "interval"))
 head(activity3, 10) #This data Frame has the same estructure of the original data but without NA values
 ```
 
+**4. -Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?**
+
+```{r MeanMedianStepsDay2}
+#First calculate the mean
+mean3.steps <- tapply(activity3$steps, activity3$date, FUN = mean, na.rm = TRUE)
+#Second calcuate the median
+median3.steps <- tapply(activity3$steps, activity3$date, FUN = median, na.rm = TRUE)
+
+print(mean.steps)
+print(median.steps)
+```
+
+In the other hand, The general **mean** and **median** values are the following:
+
+```{r puremeanmedian}
+mean(activity3$steps, na.rm = TRUE)
+median(activity3$steps, na.rm = TRUE)
+```
+
+**Answer:** There are not changing. it seems there is no impact on adding the values
+considering that the mean and median formulas are NOT considering the NA values.
 
 
- 
+## Are there differences in activity patterns between weekdays and weekends?
+
+**1. - Create a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.**
+
+```{r weekdays}
+activity3 <- mutate(activity3, weekday = weekdays(activity3$date, abbreviate = TRUE))
+table(activity3$weekday)
+
+#Now, must identify which are week days and which are weekends
+activity3 <- mutate(activity3, Week.weekend = "weekday")
+dimension <- dim(activity3)[1]
+index <- 1
+while (index <= dimension) {
+        if(activity3[index, 4] == "Sa" || activity3[index, 4] == "So"){
+                activity3[index, 5] <- "weekend"
+        }
+        index <- index + 1
+}
+
+table(activity3$Week.weekend)
+```
+
+**2. - Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). The plot should look something like the following, which was created using simulated data**
+
+
+```{r weekorweekendplot}
+avgWeekWeekend <- aggregate(x = list(steps = activity3$steps), by = list(interval = activity$interval, day = activity3$Week.weekend), FUN = mean, na.rm = TRUE)
+
+xyplot(steps ~ interval | day, avgWeekWeekend, type = "l", layout = c(1, 2), xlab = "Interval", ylab = "Number of steps")
+
+```
+
+**END OF DOCUMENT               / SANTIAGO RAMIREZ G - 2017**
+
 
 
 
