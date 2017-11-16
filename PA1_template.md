@@ -2,7 +2,7 @@
 Santiago Ramirez  
 16 November 2017  
 
-##Dataset Description
+## Dataset Description
 The variables included in the dataset are:
 
 * **steps**: Number of steps taking in a 5-minute interval (missing values are coded as NA)
@@ -14,7 +14,7 @@ The dataset is stored in a comma-separated-value (CSV) file and there are a tota
 
 
 
-##Loading and preprocessing the data
+## Loading and preprocessing the data
 
 **1. - Load the data**
 
@@ -80,7 +80,7 @@ str(activity)
 ```
 Now, date is of type "Date"
 
-##What is mean total number of steps taken per day?
+## What is mean total number of steps taken per day?
 
 
 
@@ -176,7 +176,7 @@ print(median.steps)
 ##         NA
 ```
 
-##What is the average daily activity pattern?
+## What is the average daily activity pattern?
 
 
 
@@ -210,7 +210,7 @@ averages.steps[which.max(averages.steps$steps),]
 The 5-minute interval with the (average) maximum number of steps is the interval **835** with **206** steps on average.
 
 
-##Imputing missing values
+## Imputing missing values
 
 Note that there are a number of days/intervals where there are missing values (coded as NA).
 The presence of missing days may introduce bias into some calculations or summaries of the data.

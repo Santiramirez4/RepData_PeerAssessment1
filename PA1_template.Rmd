@@ -1,11 +1,13 @@
 ---
 title: 'Reproducible Research - Course Project 1 - Activity Monitoring Data'
 author: "Santiago Ramirez"
-date: "15 November 2017"
-output: html_document
+date: "16 November 2017"
+output:
+        html_document:
+                keep_md: true
 ---
 
-##Dataset Description
+## Dataset Description
 The variables included in the dataset are:
 
 * **steps**: Number of steps taking in a 5-minute interval (missing values are coded as NA)
@@ -24,7 +26,7 @@ opts_chunk$set(echo = TRUE, cache = TRUE) ## Always show answers and avoid repea
 ```
 
 
-##Loading and preprocessing the data
+## Loading and preprocessing the data
 
 **1. - Load the data**
 
@@ -48,7 +50,7 @@ str(activity)
 ```
 Now, date is of type "Date"
 
-##What is mean total number of steps taken per day?
+## What is mean total number of steps taken per day?
 
 
 
@@ -81,7 +83,7 @@ print(mean.steps)
 print(median.steps)
 ```
 
-##What is the average daily activity pattern?
+## What is the average daily activity pattern?
 
 
 
@@ -106,7 +108,7 @@ averages.steps[which.max(averages.steps$steps),]
 The 5-minute interval with the (average) maximum number of steps is the interval **835** with **206** steps on average.
 
 
-##Imputing missing values
+## Imputing missing values
 
 Note that there are a number of days/intervals where there are missing values (coded as NA).
 The presence of missing days may introduce bias into some calculations or summaries of the data.
