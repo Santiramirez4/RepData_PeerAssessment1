@@ -3,7 +3,6 @@ title: 'Reproducible Research - Course Project 1 - Activity Monitoring Data'
 author: "Santiago Ramirez"
 date: "15 November 2017"
 output: html_document
-
 ---
 
 ##Dataset Description
@@ -38,7 +37,9 @@ str(activity)
 summary(activity)
 ```
 
-**2. - Process/transform the data (if necessary) into a format suitable for your analysis **
+
+
+**2. - Process/transform the data (if necessary) into a format suitable for your analysis**
 
 ```{r processingdata}
 activity$date <- as.Date(activity$date, "%Y-%m-%d")
@@ -49,20 +50,26 @@ Now, date is of type "Date"
 
 ##What is mean total number of steps taken per day?
 
-**1. - Calculate the total number of steps taken per day **
+
+
+**1. - Calculate the total number of steps taken per day**
 
 ``` {r meansteps}
 total.steps <- tapply(activity$steps, activity$date, FUN = sum, na.rm = TRUE)
 head(total.steps)
 ```
 
-**2. - Make a histogram of the total number of steps taken each day **
+
+
+**2. - Make a histogram of the total number of steps taken each day**
 
 ```{r histogramsteps, fig.height=4}
 hist(total.steps, xlab = "day", ylab = "Total number of steps", main = "Total number of steps taken each day", col = "cyan")
 ```
 
-**3. - Calculate and report the mean and median of the total number of steps taken per day **
+
+
+**3. - Calculate and report the mean and median of the total number of steps taken per day**
 
 ```{r MeanMedianStepsDay}
 #First calculate the mean
@@ -76,6 +83,8 @@ print(median.steps)
 
 ##What is the average daily activity pattern?
 
+
+
 **1. - Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)**
 
 ```{r averagedaily}
@@ -85,7 +94,11 @@ ggplot(data = averages.steps, aes(x = interval, y = steps)) + geom_line() + xlab
     ylab("average number of steps") + ggtitle("Average number of steps per time Interval")
 ```
 
+
+
 **2. - Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?**
+
+
 ```{r averagesmax}
 averages.steps[which.max(averages.steps$steps),]
 ```
@@ -99,6 +112,7 @@ Note that there are a number of days/intervals where there are missing values (c
 The presence of missing days may introduce bias into some calculations or summaries of the data.
 
 **1. - Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)**
+
 
 ```{r totalmissingvalues}
 
@@ -130,9 +144,12 @@ The total amount of missing values in the observations is **`r nacounter`**.
 Important to highlight that is the same value of NA present, which indicate that each observation
 has not more than 1 NA value.
 
+
 **2. - Devise a strategy for filling in all of the missing values in the dataset. The  strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.**
 
+
 First, create a table with the average steps per day
+
 
 ```{r avgstepsDay}
 averages.stepsDay <- aggregate(x = list(stepsAvg = activity$steps), by = list(date = activity$date), FUN = mean, na.rm = TRUE)
@@ -167,7 +184,7 @@ Next step is to add the corresponding step value in the orignal table, according
 
 
 ``` {r newactivitilist}
-activity2 <- merge(x = activity, y = averages.stepsDay, by.x = "date")
+activity2 <- merge(x = activity, y = averages.stepsDay, by = "date")
 
 #If data in "steps" is NA, it will be replaced by the value in "stepAvg"
 dimension <- dim(activity2)[1]
