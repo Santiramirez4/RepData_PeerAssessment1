@@ -1,25 +1,192 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: 'Reproducible Research - Course Project 1 - Activity Monitoring Data'
+author: "Santiago Ramirez"
+date: "15 November 2017"
+output: html_document
 ---
 
+##Dataset Description#
+The variables included in the dataset are:
 
-## Loading and preprocessing the data
+* **steps**: Number of steps taking in a 5-minute interval (missing values are coded as NA)
+* **date**: The date on which the measurement was taken in YYYY-MM-DD format
+* **interval**: Identifier for the 5-minute interval in which measurement was taken
+
+The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations in this dataset.
+
+```{r setup, include=FALSE}
+rm(list = ls())
+library(knitr)
+library(lattice)
+library(ggplot2)
+library(dplyr)
+opts_chunk$set(echo = TRUE, cache = TRUE) ## Always show answers and avoid repeating unnecessary calculations
+```
+
+
+##Loading and preprocessing the data
+
+**1. - Load the data**
+
+```{r readingpraparingdata}
+activity <- read.csv("activity.csv", sep = ",")
+head(activity)
+
+#To know about the data
+str(activity)
+summary(activity)
+```
+
+**2. - Process/transform the data (if necessary) into a format suitable for your analysis **
+
+```{r processingdata}
+activity$date <- as.Date(activity$date, "%Y-%m-%d")
+#validate if type of data for "Date" has changed
+str(activity)
+```
+Now, date is of type "Date"
+
+##What is mean total number of steps taken per day?
+
+**1. - Calculate the total number of steps taken per day **
+
+``` {r meansteps}
+total.steps <- tapply(activity$steps, activity$date, FUN = sum, na.rm = TRUE)
+head(total.steps)
+```
+
+**2. - Make a histogram of the total number of steps taken each day **
+
+```{r histogramsteps, fig.height=4}
+hist(total.steps, xlab = "day", ylab = "Total number of steps", main = "Total number of steps taken each day", col = "cyan")
+```
+
+**3. - Calculate and report the mean and median of the total number of steps taken per day **
+
+```{r MeanMedianStepsDay}
+#First calculate the mean
+mean.steps <- tapply(activity$steps, activity$date, FUN = mean, na.rm = TRUE)
+#Second calcuate the median
+median.steps <- tapply(activity$steps, activity$date, FUN = median, na.rm = TRUE)
+
+print(mean.steps)
+print(median.steps)
+```
+
+##What is the average daily activity pattern?
+
+**1. - Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)**
+
+```{r averagedaily}
+averages.steps <- aggregate(x = list(steps = activity$steps), by = list(interval = activity$interval), 
+    FUN = mean, na.rm = TRUE)
+ggplot(data = averages.steps, aes(x = interval, y = steps)) + geom_line() + xlab("5-minute interval") + 
+    ylab("average number of steps") + ggtitle("Average number of steps per time Interval")
+```
+
+**2. - Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?**
+```{r averagesmax}
+averages.steps[which.max(averages.steps$steps),]
+```
+
+The 5-minute interval with the (average) maximum number of steps is the interval **835** with **206** steps on average.
+
+
+##Imputing missing values
+
+Note that there are a number of days/intervals where there are missing values (coded as NA).
+The presence of missing days may introduce bias into some calculations or summaries of the data.
+
+**1. - Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)**
+
+```{r totalmissingvalues}
+
+#Since it might be possible that one observation could have more that 1 NA, the count will be done by obsrevations,
+#regardless the amount of NA present on each observation, the fact of finding 1, 2 or 3 NA, it will be considered as 1
+
+dimension <- dim(activity)[1]
+counter <- 1
+nacounter <- 0
+nasum <- 0
+
+while (counter <= dimension) {
+        nasum <- sum(is.na(activity[counter,]))
+        if (nasum > 0) {
+                nacounter <- nacounter + 1
+                nasum <- 0
+        }
+        counter <- counter + 1
+}
+
+print(nacounter)
+
+# To compare, calculate the total amount of NA in the data set
+
+sum(is.na(activity))
+```
+
+The total amount of missing values in the observations is **`r nacounter`**.
+Important to highlight that is the same value of NA present, which indicate that each observation
+has not more than 1 NA value.
+
+**2. - Devise a strategy for filling in all of the missing values in the dataset. The  strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.**
+
+First, create a table with the average steps per day
+
+```{r avgstepsDay}
+averages.stepsDay <- aggregate(x = list(stepsAvg = activity$steps), by = list(date = activity$date), FUN = mean, na.rm = TRUE)
+
+head(averages.stepsDay, 20)
+```
+
+Some days have no steps information. This fields will be updated with the general steps average
+
+``` {r generalstepsaverage}
+avgsteps <- mean(activity$steps, na.rm = TRUE)
+```
+
+Fill the gaps with avgsteps
+
+```{r fillinggeneralgaps}
+dimension <- dim(averages.stepsDay)[1]
+index <- 1
+while (index <= dimension) {
+        if (is.na(averages.stepsDay[index, 2])) {
+                averages.stepsDay[index, 2] <- avgsteps
+        }
+        index <- index + 1
+}
+
+head(averages.stepsDay, 20)
+```
+
+There is now a value for each day.
+
+Next step is to add the corresponding step value in the orignal table, according to the date
+
+
+``` {r newactivitilist}
+activity2 <- merge(x = activity, y = averages.stepsDay, by.x = "date")
+
+#If data in "steps" is NA, it will be replaced by the value in "stepAvg"
+dimension <- dim(activity2)[1]
+index <- 1
+while (index <= dimension) {
+        if (is.na(activity2[index, 2])) {
+                activity2[index, 2] <- activity2[index, 4]
+        }
+        index <- index + 1
+}
+
+```
 
 
 
-## What is mean total number of steps taken per day?
+ 
 
 
 
-## What is the average daily activity pattern?
 
 
 
-## Imputing missing values
 
-
-
-## Are there differences in activity patterns between weekdays and weekends?
